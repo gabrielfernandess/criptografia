@@ -4,6 +4,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 Use Illuminate\Support\Facades\Crypt;
 
@@ -13,6 +16,10 @@ class ImageUploadController extends Controller
 
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function imageUpload()
     {
@@ -25,13 +32,22 @@ class ImageUploadController extends Controller
 
         ]);
         $imageName = time().'.'.request()->image->getClientOriginalExtension();
-        $encrypted = Crypt::encryptString($imageName);
+        
         request()->image->move(public_path('images'), $imageName);
-
+        
         return back()
 
-            ->with('success','You have successfully upload image.')
+            ->with('success','Você conseguiu upar sua imagem com sucesso!!!!')
             ->with('image',$imageName);
+            
+    }
+
+    protected function create(array $data)
+    {
+        return User::create([
+            'foto' => $data['foto'],
+            
+        ]);
     }
 
 }
